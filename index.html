@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pluvion | API Climat & Précipitations Extrêmes pour l'Assurance</title>
+  <meta name="description" content="Pluvion fournit des indicateurs physiques de risques climatiques (précipitations extrêmes) en France à très haute résolution (2.5km) basés sur AROME, dédiés aux modèles actuariels des assureurs.">
+  <meta name="keywords" content="API climat, précipitations extrêmes, modélisation des risques, assurance, réassurance, actuariat, AROME, GEV, changement climatique, Météo-France, risque inondation, période de retour">
+  <meta name="author" content="Pluvion">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://pluvion.fr/">
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://pluvion.fr/">
+  <meta property="og:title" content="Pluvion | API Climat & Précipitations Extrêmes">
+  <meta property="og:description" content="API REST d'indicateurs de risques climatiques en France. Modélisation GEV non stationnaire à 2.5km (AROME) pour les modélisateurs de risques et la tarification en assurance.">
+  <meta property="og:image" content="https://pluvion.fr/og-image.jpg">
+  <meta property="og:site_name" content="Pluvion">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://pluvion.fr/">
+  <meta name="twitter:title" content="Pluvion | API Climat & Précipitations Extrêmes">
+  <meta name="twitter:description" content="API REST d'indicateurs de risques de précipitations extrêmes en France. Modélisation GEV non stationnaire à 2.5km pour la tarification en assurance.">
+  <meta name="twitter:image" content="https://pluvion.fr/og-image.jpg">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Pluvion API",
+    "operatingSystem": "Any",
+    "applicationCategory": "BusinessApplication",
+    "description": "API REST fournissant des indicateurs physiques de risques climatiques (précipitations extrêmes) en France basés sur la réanalyse AROME 2.5km, avec modèles GEV non stationnaires pour le secteur de l'assurance.",
+    "url": "https://pluvion.fr/",
+    "provider": {
+      "@type": "Organization",
+      "name": "Pluvion",
+      "url": "https://pluvion.fr/"
+    }
+  }
+  </script>
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+            brand: {
+              cyan: '#0284c7',
+              emerald: '#047857',
+              amber: '#b45309',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-x-hidden">
+
+  <!-- Ambient Glow -->
+  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-[600px] glow-bg"></div>
+  </div>
+
+  <div class="relative z-10 w-full bg-grid-pattern">
+
+    <!-- HEADER -->
+    <header class="border-b border-slate-200/60 backdrop-blur-md bg-white/80 sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded bg-slate-900 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 5.5L7.75 9.75a6 6 0 1 0 8.5 0z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-display font-bold text-lg tracking-tight text-slate-900">Pluvion</span>
+            <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-mono -mt-1">Climate Intelligence</span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav -->
+        <nav class="hidden md:flex items-center space-x-8 text-xs font-mono uppercase tracking-wider text-slate-500">
+          <a href="#trois-piliers" class="hover:text-slate-900 transition-colors">Notre Proposition</a>
+          <a href="#api-sandbox" class="hover:text-slate-900 transition-colors">Données & API</a>
+          <a href="#early-access" class="hover:text-slate-900 transition-colors">Contact</a>
+        </nav>
+
+        <!-- CTA -->
+        <div class="flex items-center space-x-4">
+
+          <a href="#early-access" class="hidden sm:inline-flex items-center justify-center px-4 py-2 text-xs font-mono uppercase tracking-wider text-white bg-slate-900 hover:bg-slate-800 rounded transition-all font-semibold">
+            Accès
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="relative min-h-[75vh] flex items-center py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-center max-w-4xl">
+        
+
+
+        <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-[1.15] mb-6">
+          L'intelligence climatique pour le <br><span class="text-brand-cyan">secteur de l'assurance.</span>
+        </h1>
+        
+        <p class="text-lg text-slate-600 font-light leading-relaxed max-w-2xl mx-auto mb-10">
+          Intégrez instantanément les indicateurs de risques pluviaux à haute résolution dans vos modèles de tarification, de souscription et de stress-testing.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="#early-access" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 text-xs font-mono uppercase tracking-wider text-white bg-slate-900 hover:bg-slate-800 rounded transition-all font-semibold">
+            Demander un accès API
+          </a>
+          <a href="#api-sandbox" class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3.5 text-xs font-mono uppercase tracking-wider text-slate-600 bg-white hover:bg-slate-50 border border-slate-200 rounded transition-all font-semibold">
+            Explorer les données
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- LES 3 PILIERS (PERCUTANTS) -->
+    <section id="trois-piliers" class="py-16 border-t border-slate-200/60 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+          
+          <!-- Pilier 1: L'API -->
+          <div class="space-y-4">
+            <div class="w-12 h-12 rounded bg-slate-100 flex items-center justify-center text-brand-cyan">
+              <!-- API Icon -->
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">1. Une API simple et automatisée</h3>
+            <p class="text-slate-600 text-sm leading-relaxed text-justify">
+              Une intégration directe dans vos outils de souscription. Interrogez notre API par <strong>code INSEE</strong> ou <strong>coordonnées géographiques</strong> pour récupérer instantanément le profil de risque pluvial de n'importe quel actif en France.
+            </p>
+          </div>
+
+          <!-- Pilier 2: Les Données -->
+          <div class="space-y-4">
+            <div class="w-12 h-12 rounded bg-slate-100 flex items-center justify-center text-brand-cyan">
+              <!-- Data Icon -->
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 002 2h2a2 2 0 002-2"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">2. Des indicateurs climatiques précis</h3>
+            <p class="text-slate-600 text-sm leading-relaxed text-justify">
+              Accédez aux <strong>cumuls de conception (en mm)</strong>, aux <strong>probabilités de dépassement de seuil</strong> et aux <strong>périodes de retour équivalentes</strong>. Une traduction directe de la non-stationnarité physique en indicateurs climatiques prêts à l'intégration.
+            </p>
+          </div>
+
+          <!-- Pilier 3: La Science -->
+          <div class="space-y-4">
+            <div class="w-12 h-12 rounded bg-slate-100 flex items-center justify-center text-brand-cyan">
+              <!-- Science Icon -->
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">3. La rigueur physique d'AROME</h3>
+            <p class="text-slate-600 text-sm leading-relaxed text-justify">
+              Pas d'approximation. Nos données reposent sur le modèle de Météo-France résolvant <strong>explicitement la convection</strong> (les orages locaux violents). Validé scientifiquement sur plus de 1 500 stations de mesures réelles.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- INTERACTIVE MAP & API SANDBOX (DASHBOARD-LIKE) -->
+    <section id="api-sandbox" class="py-16 lg:py-24 bg-slate-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-2xl mx-auto mb-16 space-y-2">
+          <h2 class="text-3xl font-display font-bold text-slate-900 tracking-tight">Les données en action</h2>
+          <p class="text-slate-600 text-sm font-light">Explorez la carte interactive de France et testez les requêtes API en direct.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+          
+          <!-- Map Grid -->
+          <div class="lg:col-span-6 clean-card rounded-xl p-5 bg-white flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+                <span class="text-xs font-bold text-slate-900 uppercase font-mono">1. Résolution spatiale nationale</span>
+                <div class="flex space-x-1 bg-slate-100 p-0.5 rounded border border-slate-200/60">
+                  <button id="btn-map-clim" onclick="setMapMode('clim')" class="px-2 py-0.5 rounded text-[10px] font-mono transition-all bg-white text-slate-900 font-semibold shadow-xs">Climatologie</button>
+                  <button id="btn-map-daily" onclick="setMapMode('daily')" class="px-2 py-0.5 rounded text-[10px] font-mono transition-all text-slate-500">Tendance Jour</button>
+                  <button id="btn-map-hourly" onclick="setMapMode('hourly')" class="px-2 py-0.5 rounded text-[10px] font-mono transition-all text-slate-500">Tendance Heure</button>
+                </div>
+              </div>
+
+              <!-- Map SVG -->
+              <div class="relative w-full aspect-[4/3] flex items-center justify-center bg-slate-50 rounded border border-slate-100 p-1">
+                <svg id="france-dot-map" class="w-full h-full max-h-[280px]" viewBox="0 0 100 100"></svg>
+                
+                <!-- Tooltip Map -->
+                <div id="map-tooltip" class="absolute bottom-4 left-4 right-4 bg-white/95 border border-slate-200 rounded p-2.5 shadow-sm opacity-0 pointer-events-none transition-opacity duration-200">
+                  <div class="flex justify-between items-center text-[11px]">
+                    <span id="tooltip-city" class="font-bold text-slate-900">Montpellier</span>
+                    <span id="tooltip-region" class="text-[9px] text-slate-400 font-mono">Occitanie</span>
+                  </div>
+                  <div class="grid grid-cols-2 gap-2 mt-1.5 border-t border-slate-100 pt-1.5 text-[9px] font-mono">
+                    <div>
+                      <span class="text-slate-400 block uppercase text-[7px]">Tendance Risque Jour</span>
+                      <span id="tooltip-daily-trend" class="text-slate-800 font-semibold">+27.8%</span>
+                    </div>
+                    <div>
+                      <span class="text-slate-400 block uppercase text-[7px]">Tendance Risque Heure</span>
+                      <span id="tooltip-hourly-trend" class="text-brand-cyan font-semibold">+53.9%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center justify-between text-[9px] font-mono text-slate-400">
+              <div class="flex items-center space-x-1.5">
+                <span id="legend-gradient" class="w-12 h-1.5 bg-gradient-to-r from-slate-200 to-brand-cyan rounded-full"></span>
+                <span id="legend-text">Risque 10 ans</span>
+              </div>
+              <span>Maillage AROME 2.5 km (Météo-France)</span>
+            </div>
+          </div>
+
+          <!-- API Simulator -->
+          <div class="lg:col-span-6 flex flex-col justify-between border border-slate-200 rounded-xl overflow-hidden shadow-xs bg-white">
+            
+            <div class="flex items-center justify-between px-5 py-3 border-b border-slate-100 bg-slate-50">
+              <span class="text-xs font-bold text-slate-900 uppercase font-mono">2. Intégration API REST</span>
+              <div class="flex space-x-1 bg-slate-200/60 p-0.5 rounded border border-slate-300/40 text-[9px] font-mono">
+                <button id="btn-api-sev" onclick="setApiLocation('sev')" class="px-2 py-0.5 rounded bg-white text-slate-800 font-semibold shadow-xs">Cévennes</button>
+                <button id="btn-api-par" onclick="setApiLocation('par')" class="px-2 py-0.5 rounded text-slate-500">Paris</button>
+                <button id="btn-api-alp" onclick="setApiLocation('alp')" class="px-2 py-0.5 rounded text-slate-500">Nice</button>
+                <button id="btn-api-bri" onclick="setApiLocation('bri')" class="px-2 py-0.5 rounded text-slate-500">Brest</button>
+              </div>
+            </div>
+
+            <div class="bg-slate-50/50 px-5 py-3 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-[10px] font-mono">
+              <div class="flex items-center space-x-1.5 bg-white border border-slate-200/80 rounded px-2.5 py-1.5 flex-grow">
+                <span class="text-white font-bold bg-slate-800 px-1 py-0.5 rounded text-[8px] uppercase shrink-0">GET</span>
+                <span class="text-slate-400 shrink-0">/v1/risk/</span>
+                <input type="text" id="api-endpoint-input" class="bg-transparent border-none outline-none font-mono text-slate-800 w-full" value="commune/34172?return_period=10&year=2022" onkeydown="if(event.key === 'Enter') executeMockApi();">
+              </div>
+              <button onclick="executeMockApi()" class="px-4 py-1.5 bg-slate-900 text-white font-semibold rounded hover:bg-slate-800 transition-colors text-[10px] shrink-0">
+                Exécuter
+              </button>
+            </div>
+
+            <!-- JSON Output -->
+            <div class="p-4 bg-slate-50/40 font-mono text-[10px] text-slate-600 overflow-y-auto max-h-[180px] custom-scrollbar flex-grow border-b border-slate-100">
+              <pre id="api-json-response">Loading...</pre>
+            </div>
+
+            <!-- Live Chart Shift inside API container to show Scientific Foundation -->
+            <div class="p-4 border-t border-slate-100 bg-white">
+              <div class="flex justify-between items-center mb-1">
+                <span class="text-[10px] font-bold text-slate-800 block uppercase font-mono">3. Distribution de probabilité des précipitations extrêmes</span>
+                <span class="text-[9px] text-slate-400 font-mono" id="stat-val-rl">102.8mm → 131.4mm</span>
+              </div>
+              
+              <div class="relative w-full h-32 bg-slate-50 rounded border border-slate-100 p-2 flex items-center justify-center">
+                <svg id="gev-svg-chart" class="w-full h-full" viewBox="0 0 100 45">
+                  <line x1="5" y1="38" x2="95" y2="38" stroke="#94a3b8" stroke-width="0.3" />
+                  <path id="path-gev-1985" d="" fill="#94a3b8" fill-opacity="0.08" stroke="#94a3b8" stroke-width="0.6" />
+                  <path id="path-gev-2022" d="" fill="#0284c7" fill-opacity="0.12" stroke="#0284c7" stroke-width="0.9" />
+                  <line id="line-rl-1985" x1="60" y1="10" x2="60" y2="38" stroke="#94a3b8" stroke-width="0.5" stroke-dasharray="1.5 1.5" />
+                  <line id="line-rl-2022" x1="75" y1="10" x2="75" y2="38" stroke="#047857" stroke-width="0.5" stroke-dasharray="1.5 1.5" />
+                  <text id="txt-rl-1985" x="58" y="7" fill="#64748b" font-family="monospace" font-size="3.2" font-weight="bold" text-anchor="end">Historique (1985)</text>
+                  <text id="txt-rl-2022" x="77" y="7" fill="#047857" font-family="monospace" font-size="3.2" font-weight="bold" text-anchor="start">Actuel (2022)</text>
+                </svg>
+              </div>
+            </div>
+
+            <div class="px-5 py-2 bg-slate-50 flex items-center justify-between text-[9px] text-slate-400 font-mono">
+              <span id="api-status-code">HTTP 200 OK — 42ms</span>
+              <button onclick="copyApiResponse()" class="hover:text-slate-800 transition-colors uppercase font-semibold">Copier le JSON</button>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SCIENTIFIC REFERENCE (PUNCHY CITATION) -->
+    <section class="py-16 bg-white border-y border-slate-200/60">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6">
+        <span class="text-xs font-mono uppercase tracking-widest text-slate-400">Fondement Scientifique</span>
+        <blockquote class="text-xl sm:text-2xl font-light text-slate-700 leading-relaxed italic">
+          "Une modélisation novatrice de l'intensification des extrêmes horaires de précipitations en France métropolitaine, offrant des données de résolutions inédites et encore jamais parues à ce jour."
+        </blockquote>
+        <div class="text-xs font-mono text-slate-500">
+          <span class="block font-bold text-slate-800">Données basées sur les conclusions de l'article scientifique de référence (Preprint EGUsphere)</span>
+          <span class="block mt-0.5">DOI de l'étude : <a href="https://doi.org/10.5194/egusphere-2026-1202" target="_blank" class="text-brand-cyan hover:underline">10.5194/egusphere-2026-1202</a></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- EARLY ACCESS FORM -->
+    <section id="early-access" class="py-16 lg:py-24 bg-slate-50">
+      <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-10 shadow-xs">
+          
+          <div class="text-center max-w-xl mx-auto mb-8 space-y-2">
+            <h2 class="text-2xl font-display font-bold text-slate-900">Demander un accès à l'API</h2>
+            <p class="text-slate-500 text-xs">Notre équipe étudiera votre demande sous 24 heures pour générer des clés d'accès.</p>
+          </div>
+
+          <form id="access-form" onsubmit="handleFormSubmit(event)" class="space-y-4 max-w-md mx-auto">
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label for="name" class="block text-[9px] font-mono uppercase text-slate-500 mb-1">Nom complet</label>
+                <input type="text" id="name" name="name" required class="w-full bg-white border border-slate-200 focus:border-slate-800 focus:outline-none rounded px-3 py-2 text-xs text-slate-850 placeholder-slate-400 transition-all" placeholder="Jean Dupont">
+              </div>
+              <div>
+                <label for="company" class="block text-[9px] font-mono uppercase text-slate-500 mb-1">Entreprise</label>
+                <input type="text" id="company" name="company" required class="w-full bg-white border border-slate-200 focus:border-slate-800 focus:outline-none rounded px-3 py-2 text-xs text-slate-850 placeholder-slate-400 transition-all" placeholder="AURA Assurance">
+              </div>
+            </div>
+
+            <div>
+              <label for="email" class="block text-[9px] font-mono uppercase text-slate-500 mb-1">E-mail professionnel</label>
+              <input type="email" id="email" name="email" required class="w-full bg-white border border-slate-200 focus:border-slate-800 focus:outline-none rounded px-3 py-2 text-xs text-slate-850 placeholder-slate-400 transition-all" placeholder="j.dupont@aura-assurance.fr">
+            </div>
+
+            <div>
+              <label for="usecase" class="block text-[9px] font-mono uppercase text-slate-500 mb-1">Cas d'usage principal</label>
+              <select id="usecase" name="usecase" required class="w-full bg-white border border-slate-200 focus:border-slate-800 focus:outline-none rounded px-3 py-2 text-xs text-slate-500 transition-all">
+                <option value="" disabled selected>Sélectionnez un domaine...</option>
+                <option value="catnat">Tarification CatNat & réassurance</option>
+                <option value="flood">Flash flood & ruissellement urbain</option>
+                <option value="portfolio">Stress-testing CSRD / ACPR</option>
+                <option value="infrastructure">Assurance paramétrique & dimensionnement</option>
+              </select>
+            </div>
+
+            <div class="pt-2">
+              <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-3 text-xs font-mono uppercase tracking-wider text-white bg-slate-900 hover:bg-slate-800 rounded transition-all font-semibold">
+                Soumettre la demande d'accès
+              </button>
+            </div>
+
+          </form>
+
+          <!-- Success Alert -->
+          <div id="form-success" class="hidden text-center py-6 space-y-4">
+            <div class="w-10 h-10 bg-emerald-50 border border-emerald-100 text-brand-emerald rounded-full flex items-center justify-center mx-auto shadow-3xs">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+            </div>
+            <div>
+              <h3 class="text-sm font-bold text-slate-900">Demande d'accès enregistrée</h3>
+              <p class="text-slate-500 text-xs mt-1">
+                Merci. Notre équipe étudiera votre demande d'accès (<span id="success-email" class="text-brand-cyan font-mono"></span>) sous 24 heures.
+              </p>
+            </div>
+            <button onclick="resetForm()" class="text-[10px] font-mono text-slate-400 hover:text-slate-600 underline">Soumettre une autre demande</button>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-200/80 bg-slate-50 py-12 text-[10px] text-slate-500 font-mono">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-6 h-6 rounded bg-slate-900 flex items-center justify-center">
+            <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 5.5L7.75 9.75a6 6 0 1 0 8.5 0z"/></svg>
+          </div>
+          <span class="font-display font-bold text-sm text-slate-900">Pluvion</span>
+        </div>
+        <div class="flex space-x-6 text-[10px]">
+          <a href="https://doi.org/10.5194/egusphere-2026-1202" target="_blank" class="underline hover:text-slate-900">Article Scientifique (DOI)</a>
+          <span>© 2026 Pluvion. Données sous licence scientifique bêta.</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <!-- INTERACTIVE LOGIC -->
+  <script src="app.js" defer></script>
+</body>
+</html>
