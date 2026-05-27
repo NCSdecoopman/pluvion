@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Erreur 404 - Page non trouvée | Pluvion</title>
+  <meta name="description" content="La page demandée n'existe pas ou a été déplacée. Retournez à la page d'accueil de Pluvion.">
+  <meta name="robots" content="noindex, follow">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Space Grotesk', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+            brand: {
+              cyan: '#0284c7',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased overflow-hidden h-full flex flex-col justify-between">
+
+  <!-- Ambient Glow -->
+  <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-[600px] glow-bg"></div>
+  </div>
+
+  <div class="relative z-10 w-full h-full flex flex-col justify-between bg-grid-pattern">
+    
+    <!-- HEADER (Simplified) -->
+    <header class="border-b border-slate-200/60 backdrop-blur-md bg-white/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center">
+        <!-- Logo -->
+        <a href="index.html" class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded bg-slate-900 flex items-center justify-center">
+            <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0zM12 5.5L7.75 9.75a6 6 0 1 0 8.5 0z" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-display font-bold text-lg tracking-tight text-slate-900">Pluvion</span>
+            <span class="block text-[8px] uppercase tracking-widest text-slate-500 font-mono -mt-1">Climate Intelligence</span>
+          </div>
+        </a>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="flex-grow flex items-center justify-center px-4">
+      <div class="text-center max-w-lg space-y-6">
+        
+        <div class="space-y-2">
+          <span class="text-xs font-mono uppercase tracking-widest text-brand-cyan font-bold">Erreur 404</span>
+          <h1 class="font-display text-4xl sm:text-5xl font-bold tracking-tight text-slate-900">
+            Coordonnée introuvable.
+          </h1>
+          <p class="text-slate-600 text-sm font-light leading-relaxed max-w-sm mx-auto">
+            La ressource demandée a été déplacée ou n'a jamais fait partie de nos grilles de modélisation climatique.
+          </p>
+        </div>
+
+        <div>
+          <a href="index.html" class="inline-flex items-center justify-center px-6 py-3 text-xs font-mono uppercase tracking-wider text-white bg-slate-900 hover:bg-slate-800 rounded transition-all font-semibold shadow-xs">
+            Retour à l'accueil
+          </a>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- FOOTER (Simplified) -->
+    <footer class="border-t border-slate-200/80 bg-slate-50/50 py-8 text-[10px] text-slate-500 font-mono">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <span>© 2026 Pluvion. Tous droits réservés.</span>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
